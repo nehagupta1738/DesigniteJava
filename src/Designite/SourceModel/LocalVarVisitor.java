@@ -19,10 +19,8 @@ public class LocalVarVisitor extends ASTVisitor {
 	public boolean visit(VariableDeclarationStatement variable){
 		for (Iterator iter = variable.fragments().iterator(); iter.hasNext();) {
 			VariableDeclarationFragment fragment = (VariableDeclarationFragment) iter.next();
-//			IVariableBinding binding = fragment.resolveBinding();
-			
+
 			SmLocalVar newLocalVar = new SmLocalVar(variable, fragment, parentMethod);
-			//newLocalVar.setType(variable.getType());
 			localVariables.add(newLocalVar);
 		}
 		return super.visit(variable);

@@ -1,7 +1,5 @@
 package Designite.utils;
 
-//import java.io.File;
-
 public class Constants {
 
 	public static final String TYPE_METRICS_PATH_SUFFIX = "typeMetrics.csv";

@@ -9,21 +9,8 @@ public abstract class SmSourceItem {
 	protected String name;
 	protected AccessStates accessModifier;
 
-	/**
-	 * This method prints the whole source code model For debugging purposes
-	 * only
-	 */
 	public abstract void printDebugLog(PrintWriter writer);
-
-	/**
-	 * This is the first pass of parsing a source code entity.
-	 */
 	public abstract void parse();
-
-	/**
-	 * This method establishes relationships among source-code entities. Such
-	 * relationships include variable types, super/sub types, etc.
-	 */
 	public abstract void resolve();
 
 	public String getName() {
@@ -34,7 +21,6 @@ public abstract class SmSourceItem {
 		return accessModifier;
 	}
 
-	// TODO check default case
 	void setAccessModifier(int modifier) {
 		if (Modifier.isPublic(modifier))
 			accessModifier = AccessStates.PUBLIC;

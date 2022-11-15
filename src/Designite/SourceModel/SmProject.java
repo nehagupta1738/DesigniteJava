@@ -138,10 +138,6 @@ public class SmProject extends SmSourceItem {
 			cu = (CompilationUnit) parser.createAST(null);
 		} catch (NullPointerException ex) {
 			// Consume it.
-			// In some rare situations, the above statement in try block results in a
-			// NullPointer exception.
-			// I tried to figure out but it seems it is coming from the parser library.
-			// Hence, leaving it silently.
 		}
 		if (cu != null)
 			if (!cu.getAST().hasBindingsRecovery()) {

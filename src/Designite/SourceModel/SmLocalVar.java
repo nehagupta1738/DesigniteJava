@@ -29,12 +29,10 @@ public class SmLocalVar extends SmEntitiesWithType {
 		print(writer, "\t\t\tParent method: " + this.parentMethod.getName());
 
 		if (!isPrimitiveType()) {
-//		if (!isPrimitiveType() && !isTypeVariable()) {
 			if (typeInfo.isParametrizedType()) {
 				print(writer, "\t\t\tParameter types: " + typeInfo.getStringOfNonPrimitiveParameters());
 			}
 			else {
-//				print(writer, "\t\t\tVariable type: " + getType().getName());
 				print(writer, "\t\t\tVariable type: " + getType());
 			}
 		}

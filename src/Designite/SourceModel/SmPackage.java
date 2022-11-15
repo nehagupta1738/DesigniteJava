@@ -52,8 +52,6 @@ public class SmPackage extends SmSourceItem {
 	private void addNestedClass(List<SmType> list) {
 		if (list.size() > 1) {
 			for (int i = 1; i < list.size(); i++) {
-				//SM_Type nested = list.get(i);
-				//SM_Type outer = list.get(0);
 				typeList.add(list.get(i));
 				list.get(0).addNestedClass(list.get(i));
 				list.get(i).setNestedClass(list.get(0).getTypeDeclaration());
@@ -64,7 +62,6 @@ public class SmPackage extends SmSourceItem {
 	private void parseTypes(SmPackage parentPkg) {
 		for (SmType type : typeList) {
 			type.parse();
-//			System.out.println("Type : " + type.name + ", nested:: " + type.getNestedTypes());
 		}
 	}
 
@@ -81,24 +78,15 @@ public class SmPackage extends SmSourceItem {
 	public void parse() {
 
 		for (CompilationUnit unit : compilationUnitList) {
-			/*
-			 * ImportVisitor importVisitor = new ImportVisitor();
-			 * unit.accept(importVisitor); List<ImportDeclaration> importList =
-			 * importVisitor.getImports(); if (importList.size() > 0)
-			 * imports.addAll(importList);
-			 */
 
 			TypeVisitor visitor = new TypeVisitor(unit, this, inputArgs);
 			unit.accept(visitor);
 			List<SmType> list = visitor.getTypeList();
 			if (list.size() > 0) {
 				if (list.size() == 1) {
-					typeList.addAll(list); // if the compilation unit contains
-											// only one class; simpler case,
-											// there is no nested classes
+					typeList.addAll(list);
 				} else {
 					typeList.add(list.get(0));
-//					System.out.println("TypeList :: " + list);
 					addNestedClass(list);
 				}
 			}
@@ -156,6 +144,5 @@ public class SmPackage extends SmSourceItem {
 				+ "," + metrics.getNumOfFanOutTypes()
 				+ "\n";
 	}
-
 
 }

@@ -23,7 +23,6 @@ import Designite.utils.models.Edge;
 import Designite.utils.models.Vertex;
 import Designite.visitors.StaticFieldAccessVisitor;
 
-//TODO check EnumDeclaration, AnnotationTypeDeclaration and nested classes
 public class SmType extends SmSourceItem implements Vertex {
 	
 	

@@ -12,20 +12,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import org.apache.commons.cli.*;
 
-/**
- * 
- * This is the start of the project
- */
+
 public class Designite {
 	public static void main(String[] args) throws IOException {
 		InputArgs argsObj = parseArguments(args);
 		SmProject project = new SmProject(argsObj);
 		Logger.logFile = getlogFileName(argsObj);
-		//TODO: log the version number
 		project.parse();
 		project.resolve();
 		project.computeMetrics();
-		//project.detectCodeSmells();
 		if (Constants.DEBUG)
 			writeDebugLog(argsObj, project);
 		Logger.log("Done.");
