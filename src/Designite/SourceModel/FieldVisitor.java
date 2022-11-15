@@ -31,7 +31,4 @@ public class FieldVisitor extends ASTVisitor {
 		return fields;
 	}
 
-	/*
-	 * public int countFields() { return fields.size(); }
-	 */
 }

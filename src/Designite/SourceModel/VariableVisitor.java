@@ -27,7 +27,4 @@ public class VariableVisitor extends ASTVisitor {
 		return parameters;
 	}
 
-	/*public int countParameters() {
-		return parameters.size();
-	}*/
 }

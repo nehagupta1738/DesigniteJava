@@ -16,7 +16,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import Designite.InputArgs;
 import Designite.metrics.MethodMetrics;
-//import Designite.smells.implementationSmells.ImplementationSmellDetector;
 import Designite.smells.models.ImplementationCodeSmell;
 import Designite.utils.CSVUtils;
 import Designite.utils.Constants;
@@ -135,10 +134,6 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		}
 	}
 
-//	public boolean isAbstract() {
-//		return isAbstract;
-//	}
-
 	public boolean isInterface() {
 		return isInterface;
 	}
@@ -147,10 +142,6 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		nestedClass = true;
 		this.containerClass = referredClass;
 	}
-
-//	public boolean isNestedClass() {
-//		return nestedClass;
-//	}
 
 	private void setImportList(CompilationUnit unit) {
 		ImportVisitor importVisitor = new ImportVisitor();
@@ -376,26 +367,7 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 				+ "," + metrics.getNumOfParameters()
 				+ "\n";
 	}
-	
-//	public void extractCodeSmells() {
-//		for (SM_Method method : methodList) {
-//			ImplementationSmellDetector detector = new ImplementationSmellDetector(metricsMapping.get(method)
-//					, new SourceItemInfo(getParentPkg().getParentProject().getName()
-//							, getParentPkg().getName()
-//							, getName()
-//							, method.getName()));
-//			smellMapping.put(method, detector.detectCodeSmells());
-//			exportDesignSmellsToCSV(method);
-//
-//		}
-//	}
-	
-//	private void exportDesignSmellsToCSV(SM_Method method) {
-//		CSVUtils.addAllToCSVFile(inputArgs.getOutputFolder()
-//				+ File.separator + Constants.IMPLEMENTATION_CODE_SMELLS_PATH_SUFFIX
-//				, smellMapping.get(method));
-//	}
-//
+
 	@Override
 	public String toString() {
 		return "Type="+name;

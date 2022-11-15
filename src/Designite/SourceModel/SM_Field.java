@@ -18,11 +18,9 @@ public class SM_Field extends SM_EntitiesWithType implements Vertex {
 	private SM_Type nestedParentType = null;
 	private boolean finalField = false;
 	private boolean staticField = false;
-	//private VariableDeclarationFragment variableDeclaration;
 	
 	public SM_Field(FieldDeclaration fieldDeclaration, VariableDeclarationFragment varDecl, SM_Type parentType) {
 		this.fieldDeclaration = fieldDeclaration;
-		//this.variableDeclaration = varDecl;
 		this.parentType = parentType;
 		setAccessModifier(fieldDeclaration.getModifiers());
 		setFieldInfo(fieldDeclaration);

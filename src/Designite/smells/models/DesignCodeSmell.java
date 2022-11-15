@@ -14,14 +14,6 @@ public class DesignCodeSmell extends CodeSmell {
 		this.smellName = smellName;
 	}
 
-	public String getTypeName() {
-		return typeName;
-	}
-
-	public String getSmellName() {
-		return smellName;
-	}
-
 	@Override
 	public String toString() {
 		return getProjectName()

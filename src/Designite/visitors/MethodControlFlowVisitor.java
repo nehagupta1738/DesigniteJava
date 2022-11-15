@@ -67,26 +67,7 @@ public class MethodControlFlowVisitor extends ASTVisitor {
 		tryStatements.add(node);
 		return true;
 	}
-	
-	public List<IfStatement> getIfStatements() {
-		return ifStatements;
-	}
-	
-	public List<ForStatement> getForStatements() {
-		return forStatements;
-	}
-	
-	public List<WhileStatement> getWhileStatements() {
-		return whileStatements;
-	}
-	
-	public List<DoStatement> getDoStatements() {
-		return doStatements;
-	}
-	
-	public List<TryStatement> getTryStatements() {
-		return tryStatements;
-	}
+
 	
 	public int getNumOfIfStatements() {
 		return ifStatements.size();

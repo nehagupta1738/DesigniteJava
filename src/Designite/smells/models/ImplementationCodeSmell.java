@@ -17,18 +17,6 @@ public class ImplementationCodeSmell extends CodeSmell {
 		this.smellName = smellName;
 	}
 
-	public String getTypeName() {
-		return typeName;
-	}
-
-	public String getMethodName() {
-		return methodName;
-	}
-
-	public String getSmellName() {
-		return smellName;
-	}
-
 	@Override
 	public String toString() {
 		return getProjectName()

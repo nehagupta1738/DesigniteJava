@@ -59,41 +59,20 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 			isConstructor = true;
 	}
 
-//	public boolean isAbstract() {
-//		return this.abstractMethod;
-//	}
+
 
 	public boolean isStatic() {
 		return this.staticMethod;
 	}
 
-//	public boolean isFinal() {
-//		return this.finalMethod;
-//	}
-//
-//	public boolean isConstructor() {
-//		return this.isConstructor;
-//	}
-
 	public SM_Type getParentType() {
 		return parentType;
 	}
-	
-//	public boolean throwsException() {
-//		return throwsException;
-//	}
-//
-//	public boolean hasBody() {
-//		return this.methodDeclaration.getBody() != null;
-//	}
+
 
 	public List<SM_Parameter> getParameterList() {
 		return parameterList;
 	}
-
-//	public List<SM_LocalVar> getLocalVarList() {
-//		return localVarList;
-//	}
 
 	public List<SM_Method> getCalledMethods() {
 		return calledMethodsList;
@@ -114,14 +93,7 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 			var.parse();
 		}
 	}
-	
-//	public String getMethodBody() {
-//		if (this.hasBody())
-//			return this.getMethodDeclaration().getBody().toString();
-//		else
-//			return "";
-//	}
-	
+
 	@Override
 	public void printDebugLog(PrintWriter writer) {
 		print(writer, "\t\tMethod: " + name);

@@ -34,7 +34,6 @@ Designite\InputArgs.class
 Designite\smells\models\CodeSmell.class
 Designite\SourceModel\SM_SourceItem.class
 Designite\SourceModel\SM_Type.class
-Designite\visitors\NumberLiteralVisitor.class
 Designite\visitors\MethodControlFlowVisitor.class
 Designite\utils\Logger.class
 Designite\metrics\MethodMetrics.class

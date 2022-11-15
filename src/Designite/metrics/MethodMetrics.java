@@ -1,10 +1,5 @@
 package Designite.metrics;
-
-import java.util.List;
-
-import Designite.SourceModel.SM_Field;
 import Designite.SourceModel.SM_Method;
-import Designite.SourceModel.SM_Type;
 import Designite.visitors.MethodControlFlowVisitor;
 
 public class MethodMetrics implements MetricExtractor {
@@ -67,14 +62,6 @@ public class MethodMetrics implements MetricExtractor {
 
 	public int getNumOfLines() {
 		return numOfLines;
-	}
-
-	public List<SM_Field> getDirectFieldAccesses() {
-		return method.getDirectFieldAccesses();
-	}
-	
-	public List<SM_Type> getSMTypesInInstanceOf() {
-		return method.getSMTypesInInstanceOf();
 	}
 	
 	public SM_Method getMethod() {

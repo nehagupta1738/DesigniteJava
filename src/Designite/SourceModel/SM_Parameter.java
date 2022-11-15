@@ -15,10 +15,7 @@ public class SM_Parameter extends SM_EntitiesWithType {
 		variableDecl = variable;
 		
 	}
-	
-//	void setParent(SM_Method parentMethod) {
-//		this.parentMethod = parentMethod;
-//	}
+
 	
 	public SM_Method getParent() {
 		return parentMethod;

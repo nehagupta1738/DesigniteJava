@@ -17,9 +17,6 @@ public class SM_LocalVar extends SM_EntitiesWithType {
 		localVarDecl = varDecl;
 	}
 
-	public SM_Method getParentMethod() {
-		return parentMethod;
-	}
 	
 	@Override
 	public SM_Type getParentType() {
@@ -40,9 +37,7 @@ public class SM_LocalVar extends SM_EntitiesWithType {
 //				print(writer, "\t\t\tVariable type: " + getType().getName());
 				print(writer, "\t\t\tVariable type: " + getType());
 			}
-		} /*else if (isTypeVariable()) {
-			print(writer, "\t\t\tType Variable :: " + getName());
-		}*/
+		}
 		else
 			print(writer, "\t\t\tPrimitive variable type: " + getPrimitiveType());
 		print(writer, "\t\t\t----");

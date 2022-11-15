@@ -40,8 +40,5 @@ public class TypeVisitor extends ASTVisitor{
 	public List<SM_Type> getTypeList() {
 		return types;
 	}
-	
-	public List<TypeDeclaration> getTypeDeclarationList() {
-		return typeDeclarationList;
-	}
+
 }

@@ -10,15 +10,10 @@ import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
 public class MethodInvVisitor extends ASTVisitor {
 	List<MethodInvocation> calledMethods = new ArrayList<MethodInvocation>();
-	//private MethodDeclaration methodDeclaration;
 
 	public MethodInvVisitor(MethodDeclaration methodDeclaration) {
-		//this.methodDeclaration = methodDeclaration;
+
 	}
-	
-//	public MethodInvVisitor() {
-//
-//	}
 
 	@Override
 	public boolean visit(MethodInvocation method) {

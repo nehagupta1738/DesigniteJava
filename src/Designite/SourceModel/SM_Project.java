@@ -48,31 +48,8 @@ public class SM_Project extends SM_SourceItem {
 		return sourceFileList;
 	}
 
-	public void setCompilationUnitList(List<CompilationUnit> list) {
-		if (list == null)
-			throw new NullPointerException();
-		compilationUnitList = list;
-	}
-
-	public List<CompilationUnit> getCompilationUnitList() {
-		return compilationUnitList;
-	}
-
 	public List<SM_Package> getPackageList() {
 		return packageList;
-	}
-
-	public int getPackageCount() {
-		return packageList.size();
-	}
-
-	// method used in tests
-	public CompilationUnit createCU(String filePath) {
-		String fileToString = readFileToString(filePath);
-		int startingIndex = filePath.lastIndexOf(File.separatorChar);
-		unitName = filePath.substring(startingIndex + 1);
-
-		return createAST(fileToString, unitName);
 	}
 
 	private void parseAllPackages() {
@@ -234,12 +211,5 @@ public class SM_Project extends SM_SourceItem {
 			pkg.extractTypeMetrics();
 		}
 	}
-
-//	public void detectCodeSmells() {
-//		Logger.log("Extracting code smells...");
-//		for (SM_Package pkg : packageList) {
-//			pkg.extractCodeSmells();
-//		}
-//	}
 
 }

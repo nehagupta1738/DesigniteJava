@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 public abstract class SM_SourceItem {
 	protected String name;
 	protected AccessStates accessModifier;
-	// protected SM_SourceItem getParentInfo();
 
 	/**
 	 * This method prints the whole source code model For debugging purposes
@@ -47,16 +46,6 @@ public abstract class SM_SourceItem {
 			accessModifier = AccessStates.DEFAULT;
 	}
 
-//	protected SM_Type findType(SM_Project parentProject, String typeName, String pkgName) {
-//		for (SM_Package pkg:parentProject.getPackageList())
-//			if (pkg.getName().equals(pkgName))
-//			{
-//				for(SM_Type type:pkg.getTypeList())
-//					if(type.getName().equals(typeName))
-//						return type;
-//			}
-//		return null;
-//	}
 	List<SM_Type> getTypesOfProject(SM_Project project) {
 		List<SM_Package> pkgList = new ArrayList<>();
 		List<SM_Type> typeList = new ArrayList<>();
@@ -68,27 +57,6 @@ public abstract class SM_SourceItem {
 		return typeList;
 	}
 
-//	List<SM_Method> getMethodsOfProject(SM_Project project) {
-//		List<SM_Type> typeList = new ArrayList<>();
-//		List<SM_Method> methodList = new ArrayList<>();
-//
-//		typeList.addAll(getTypesOfProject(project));
-//		for (SM_Type type : typeList)
-//			methodList.addAll(type.getMethodList());
-//
-//		return methodList;
-//	}
-
-//	List<SM_Method> getMethodsOfPkg(SM_Package pkg) {
-//		List<SM_Type> typeList = new ArrayList<>();
-//		List<SM_Method> methodList = new ArrayList<>();
-//
-//		typeList.addAll(pkg.getTypeList());
-//		for (SM_Type type : typeList)
-//			methodList.addAll(type.getMethodList());
-//
-//		return methodList;
-//	}
 
 	void print(PrintWriter writer, String str) {
 		if (writer != null)
@@ -99,14 +67,5 @@ public abstract class SM_SourceItem {
 		else
 			System.out.println(str);
 	}
-	
-//	protected String convertListToString(List<SM_Type> typeList) {
-//		String result = "";
-//		for (SM_Type type : typeList)
-//			if(result.equals(""))
-//				result = type.getName();
-//			else
-//				result += ", " + type.getName();
-//		return null;
-//	}
+
 }
