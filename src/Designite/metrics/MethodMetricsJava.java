@@ -1,16 +1,16 @@
 package Designite.metrics;
-import Designite.SourceModel.SM_Method;
+import Designite.SourceModel.SmMethod;
 import Designite.visitors.MethodControlFlowVisitor;
 
-public class MethodMetrics implements MetricExtractor {
+public class MethodMetricsJava implements MetricExtractor {
 
 	private int numOfParameters;
 	private int cyclomaticComplexity;
 	private int numOfLines;
 	
-	private SM_Method method;
+	private SmMethod method;
 	
-	public MethodMetrics(SM_Method method) {
+	public MethodMetricsJava(SmMethod method) {
 		this.method = method;
 	}
 	
@@ -64,7 +64,7 @@ public class MethodMetrics implements MetricExtractor {
 		return numOfLines;
 	}
 	
-	public SM_Method getMethod() {
+	public SmMethod getMethod() {
 		return method;
 	}
 

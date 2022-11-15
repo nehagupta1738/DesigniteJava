@@ -44,7 +44,6 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>tests/DesigniteTests</testSourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>tests/TestFiles</directory>
@@ -100,11 +99,4 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<name>DesigniteJava</name>
-	<url>http://www.designite-tools.com</url>
-	<description>DesigniteJava is a software design quality assessment tool. It computes matrices and detect code smells in Java source code.</description>
-	<organization>
-		<url>http://www.designite-tools.com</url>
-		<name>Designite</name>
-	</organization>
 </project>

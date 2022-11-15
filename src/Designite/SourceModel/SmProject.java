@@ -20,21 +20,21 @@ import Designite.utils.CSVUtils;
 import Designite.utils.Logger;
 import Designite.utils.models.Graph;
 
-public class SM_Project extends SM_SourceItem {
+public class SmProject extends SmSourceItem {
 
 	private InputArgs inputArgs;
 	private List<String> sourceFileList;
 	private List<CompilationUnit> compilationUnitList;
-	private List<SM_Package> packageList;
+	private List<SmPackage> packageList;
 	private Graph hierarchyGraph;
 	private Graph dependencyGraph;
 	private String unitName;
 
-	public SM_Project(InputArgs argsObj) {
+	public SmProject(InputArgs argsObj) {
 		this.inputArgs = argsObj;
 		sourceFileList = new ArrayList<String>();
 		compilationUnitList = new ArrayList<CompilationUnit>();
-		packageList = new ArrayList<SM_Package>();
+		packageList = new ArrayList<SmPackage>();
 		hierarchyGraph = new Graph();
 		dependencyGraph = new Graph();
 		setName(this.inputArgs.getProjectName());
@@ -48,12 +48,12 @@ public class SM_Project extends SM_SourceItem {
 		return sourceFileList;
 	}
 
-	public List<SM_Package> getPackageList() {
+	public List<SmPackage> getPackageList() {
 		return packageList;
 	}
 
 	private void parseAllPackages() {
-		for (SM_Package pkg : packageList) {
+		for (SmPackage pkg : packageList) {
 			pkg.parse();
 		}
 	}
@@ -75,10 +75,10 @@ public class SM_Project extends SM_SourceItem {
 			} else {
 				packageName = "(default package)";
 			}
-			SM_Package pkgObj = searchPackage(packageName);
+			SmPackage pkgObj = searchPackage(packageName);
 			// If pkgObj is null, package has not yet created
 			if (pkgObj == null) {
-				pkgObj = new SM_Package(packageName, this, inputArgs);
+				pkgObj = new SmPackage(packageName, this, inputArgs);
 				packageList.add(pkgObj);
 			}
 			pkgObj.addCompilationUnit(unit);
@@ -93,8 +93,8 @@ public class SM_Project extends SM_SourceItem {
 		}
 	}
 
-	private SM_Package searchPackage(String packageName) {
-		for (SM_Package pkg : packageList) {
+	private SmPackage searchPackage(String packageName) {
+		for (SmPackage pkg : packageList) {
 			if (pkg.getName().equals(packageName))
 				return pkg;
 		}
@@ -182,7 +182,7 @@ public class SM_Project extends SM_SourceItem {
 	public void printDebugLog(PrintWriter writer) {
 		print(writer, "Project: " + name);
 		print(writer, "-------------------");
-		for (SM_Package pkg : packageList) {
+		for (SmPackage pkg : packageList) {
 			pkg.printDebugLog(writer);
 		}
 	}
@@ -197,7 +197,7 @@ public class SM_Project extends SM_SourceItem {
 
 	public void resolve() {
 		Logger.log("Resolving symbols...");
-		for (SM_Package pkg : packageList) {
+		for (SmPackage pkg : packageList) {
 			pkg.resolve();
 		}
 		hierarchyGraph.computeConnectedComponents();
@@ -207,7 +207,7 @@ public class SM_Project extends SM_SourceItem {
 	public void computeMetrics() {
 		Logger.log("Extracting metrics...");
 		CSVUtils.initializeCSVDirectory(name, inputArgs.getOutputFolder());
-		for (SM_Package pkg : packageList) {
+		for (SmPackage pkg : packageList) {
 			pkg.extractTypeMetrics();
 		}
 	}

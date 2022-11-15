@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.PrintWriter;
 
-public abstract class SM_SourceItem {
+public abstract class SmSourceItem {
 	protected String name;
 	protected AccessStates accessModifier;
 
@@ -46,12 +46,12 @@ public abstract class SM_SourceItem {
 			accessModifier = AccessStates.DEFAULT;
 	}
 
-	List<SM_Type> getTypesOfProject(SM_Project project) {
-		List<SM_Package> pkgList = new ArrayList<>();
-		List<SM_Type> typeList = new ArrayList<>();
+	List<SmType> getTypesOfProject(SmProject project) {
+		List<SmPackage> pkgList = new ArrayList<>();
+		List<SmType> typeList = new ArrayList<>();
 
 		pkgList.addAll(project.getPackageList());
-		for (SM_Package pkg : pkgList)
+		for (SmPackage pkg : pkgList)
 			typeList.addAll(pkg.getTypeList());
 
 		return typeList;

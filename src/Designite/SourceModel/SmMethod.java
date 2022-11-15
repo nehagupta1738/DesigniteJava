@@ -17,29 +17,29 @@ import Designite.visitors.DirectAceessFieldVisitor;
 import Designite.visitors.InstanceOfVisitor;
 import Designite.visitors.ThrowVisitor;
 
-public class SM_Method extends SM_SourceItem implements Vertex {
+public class SmMethod extends SmSourceItem implements Vertex {
 		
 	private boolean abstractMethod;
 	private boolean finalMethod;
 	private boolean staticMethod;
 	private boolean isConstructor;
 	private boolean throwsException;
-	private SM_Type parentType;
+	private SmType parentType;
 
 	private MethodDeclaration methodDeclaration;
 
-	private List<SM_Method> calledMethodsList = new ArrayList<SM_Method>();
-	private List<SM_Parameter> parameterList = new ArrayList<SM_Parameter>();
-	private List<SM_LocalVar> localVarList = new ArrayList<SM_LocalVar>();
+	private List<SmMethod> calledMethodsList = new ArrayList<SmMethod>();
+	private List<SmParameter> parameterList = new ArrayList<SmParameter>();
+	private List<SmLocalVar> localVarList = new ArrayList<SmLocalVar>();
 	private List<MethodInvocation> calledMethods = new ArrayList<MethodInvocation>();
-	private List<SM_Type> referencedTypeList = new ArrayList<SM_Type>();
+	private List<SmType> referencedTypeList = new ArrayList<SmType>();
 	private List<SimpleName> namesInMethod = new ArrayList<>();
 	private List<FieldAccess> thisAccessesInMethod = new ArrayList<>();
-	private List<SM_Field> directFieldAccesses = new ArrayList<>();
+	private List<SmField> directFieldAccesses = new ArrayList<>();
 	private List<Type> typesInInstanceOf = new ArrayList<>();
-	private List<SM_Type> smTypesInInstanceOf = new ArrayList<>();
+	private List<SmType> smTypesInInstanceOf = new ArrayList<>();
 
-	public SM_Method(MethodDeclaration methodDeclaration, SM_Type typeObj) {
+	public SmMethod(MethodDeclaration methodDeclaration, SmType typeObj) {
 		name = methodDeclaration.getName().toString();
 		this.parentType = typeObj;
 		this.methodDeclaration = methodDeclaration;
@@ -65,16 +65,16 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 		return this.staticMethod;
 	}
 
-	public SM_Type getParentType() {
+	public SmType getParentType() {
 		return parentType;
 	}
 
 
-	public List<SM_Parameter> getParameterList() {
+	public List<SmParameter> getParameterList() {
 		return parameterList;
 	}
 
-	public List<SM_Method> getCalledMethods() {
+	public List<SmMethod> getCalledMethods() {
 		return calledMethodsList;
 	}
 	
@@ -83,13 +83,13 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 	}
 
 	private void parseParameters() {
-		for (SM_Parameter param : parameterList) {
+		for (SmParameter param : parameterList) {
 			param.parse();
 		}
 	}
 
 	private void parseLocalVar() {
-		for (SM_LocalVar var : localVarList) {
+		for (SmLocalVar var : localVarList) {
 			var.parse();
 		}
 	}
@@ -105,11 +105,11 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 		print(writer, "\t\tFinal: " + finalMethod);
 		print(writer, "\t\tStatic: " + staticMethod);
 		print(writer, "\t\tCalled methods: ");
-		for(SM_Method method:getCalledMethods())
+		for(SmMethod method:getCalledMethods())
 			print(writer, "\t\t\t" + method.getName());
-		for (SM_Parameter param : parameterList)
+		for (SmParameter param : parameterList)
 			param.printDebugLog(writer);
-		for (SM_LocalVar var : localVarList)
+		for (SmLocalVar var : localVarList)
 			var.printDebugLog(writer);
 		print(writer, "\t\t----");
 	}
@@ -129,7 +129,7 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 			VariableVisitor parameterVisitor = new VariableVisitor(this);
 			// methodDeclaration.accept(parameterVisitor);
 			var.accept(parameterVisitor);
-			List<SM_Parameter> pList = parameterVisitor.getParameterList();
+			List<SmParameter> pList = parameterVisitor.getParameterList();
 			if (pList.size() > 0) {
 				parameterList.addAll(pList);
 			}
@@ -138,7 +138,7 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 
 		LocalVarVisitor localVarVisitor = new LocalVarVisitor(this);
 		methodDeclaration.accept(localVarVisitor);
-		List<SM_LocalVar> lList = localVarVisitor.getLocalVarList();
+		List<SmLocalVar> lList = localVarVisitor.getLocalVarList();
 		if (lList.size() > 0) {
 			localVarList.addAll(lList);
 		}
@@ -169,10 +169,10 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 
 	@Override
 	public void resolve() {
-		for (SM_Parameter param : parameterList) {
+		for (SmParameter param : parameterList) {
 				param.resolve();
 		}
-		for (SM_LocalVar localVar : localVarList) {
+		for (SmLocalVar localVar : localVarList) {
 			localVar.resolve();
 		}
 		calledMethodsList = (new Resolver()).inferCalledMethods(calledMethods, parentType);
@@ -182,17 +182,17 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 	}
 	
 	private void setReferencedTypes() {
-		for (SM_Parameter param : parameterList) {
+		for (SmParameter param : parameterList) {
 			if (!param.isPrimitiveType()) {
 				addunique(param.getType());
 			}
 		}
-		for (SM_LocalVar localVar : localVarList) {
+		for (SmLocalVar localVar : localVarList) {
 			if (!localVar.isPrimitiveType()) {
 				addunique(localVar.getType());
 			}
 		}
-		for (SM_Method methodCall : calledMethodsList) {
+		for (SmMethod methodCall : calledMethodsList) {
 			if (methodCall.isStatic()) {
 				addunique(methodCall.getParentType());
 			}
@@ -201,14 +201,14 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 	
 	private void setDirectFieldAccesses() {
 		for (FieldAccess thisAccess : thisAccessesInMethod) {
-			SM_Field sameField = getFieldWithSameName(thisAccess.getName().toString());
+			SmField sameField = getFieldWithSameName(thisAccess.getName().toString());
 			if (sameField != null && !directFieldAccesses.contains(sameField)) {
 				directFieldAccesses.add(sameField);
 			}
 		}
 		for (SimpleName name : namesInMethod) {
 			if (!existsAsNameInLocalVars(name.toString())) {
-				SM_Field sameField = getFieldWithSameName(name.toString());
+				SmField sameField = getFieldWithSameName(name.toString());
 				if (sameField != null && !directFieldAccesses.contains(sameField)) {
 					directFieldAccesses.add(sameField);
 				}
@@ -217,7 +217,7 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 	}
 	
 	private boolean existsAsNameInLocalVars(String name) {
-		for (SM_LocalVar localVar : localVarList) {
+		for (SmLocalVar localVar : localVarList) {
 			if (name.equals(localVar.getName())) {
 				return true;
 			}
@@ -225,8 +225,8 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 		return false;
 	}
 	
-	private SM_Field getFieldWithSameName(String name) {
-		for (SM_Field field : parentType.getFieldList()) {
+	private SmField getFieldWithSameName(String name) {
+		for (SmField field : parentType.getFieldList()) {
 			if (name.equals(field.getName())) {
 				return field;
 			}
@@ -237,27 +237,27 @@ public class SM_Method extends SM_SourceItem implements Vertex {
 	private void setSMTypesInInstanceOf() {
 		Resolver resolver = new Resolver();
 		for (Type type : typesInInstanceOf) {
-			SM_Type smType = resolver.resolveType(type, parentType.getParentPkg().getParentProject());
+			SmType smType = resolver.resolveType(type, parentType.getParentPkg().getParentProject());
 			if (smType != null && !smTypesInInstanceOf.contains(smType)) {
 				smTypesInInstanceOf.add(smType);
 			}
 		}
 	}
 	
-	private void addunique(SM_Type variableType) {
+	private void addunique(SmType variableType) {
 		if (!referencedTypeList.contains(variableType))
 			referencedTypeList.add(variableType);
 	}
 
-	public List<SM_Type> getReferencedTypeList() {
+	public List<SmType> getReferencedTypeList() {
 		return referencedTypeList;
 	}
 	
-	public List<SM_Field> getDirectFieldAccesses() {
+	public List<SmField> getDirectFieldAccesses() {
 		return directFieldAccesses;
 	}
 	
-	public List<SM_Type> getSMTypesInInstanceOf() {
+	public List<SmType> getSMTypesInInstanceOf() {
 		return smTypesInInstanceOf;
 	}
 	

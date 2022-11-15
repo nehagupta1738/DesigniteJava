@@ -1,8 +1,6 @@
 package Designite.SourceModel;
 
-import java.util.List;
-
-public abstract class SM_EntitiesWithType extends SM_SourceItem {
+public abstract class SmEntitiesWithType extends SmSourceItem {
 	
 	protected TypeInfo typeInfo;
 
@@ -10,12 +8,12 @@ public abstract class SM_EntitiesWithType extends SM_SourceItem {
 		return typeInfo.isPrimitiveType();
 	}
 	
-	public SM_Type getParentType() {
+	public SmType getParentType() {
 
 		return null;
 	}
 
-	public SM_Type getType() {
+	public SmType getType() {
 		return typeInfo.getTypeObj();
 	}	
 	

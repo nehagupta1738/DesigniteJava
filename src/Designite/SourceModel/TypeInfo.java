@@ -5,17 +5,17 @@ import java.util.List;
 
 public class TypeInfo {
 
-	private SM_Type typeObj;
+	private SmType typeObj;
 	private boolean primitiveType;
 	private String objPrimitiveType;
 	private boolean parametrizedType;
-	private List<SM_Type> nonPrimitiveTypeParameters = new ArrayList<>();
+	private List<SmType> nonPrimitiveTypeParameters = new ArrayList<>();
 
-	public SM_Type getTypeObj() {
+	public SmType getTypeObj() {
 		return typeObj;
 	}
 	
-	public void setTypeObj(SM_Type typeObj) {
+	public void setTypeObj(SmType typeObj) {
 		this.typeObj = typeObj;
 	}
 	
@@ -43,13 +43,13 @@ public class TypeInfo {
 		this.parametrizedType = parametrizedType;
 	}
 	
-	public List<SM_Type> getNonPrimitiveTypeParameters() {
+	public List<SmType> getNonPrimitiveTypeParameters() {
 		return nonPrimitiveTypeParameters;
 	}
 	
 	public String getStringOfNonPrimitiveParameters() {
 		String output = "[";
-		for (SM_Type type : nonPrimitiveTypeParameters) {
+		for (SmType type : nonPrimitiveTypeParameters) {
 			output += type.getName() + ", "; 
 		}
 		return removeLastComma(output) + "]";
@@ -63,7 +63,7 @@ public class TypeInfo {
 		return getNonPrimitiveTypeParameters().size();
 	}
 	
-	public void addNonPrimitiveTypeParameter(SM_Type element) {
+	public void addNonPrimitiveTypeParameter(SmType element) {
 		nonPrimitiveTypeParameters.add(element);
 	}
 

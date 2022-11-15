@@ -15,7 +15,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import Designite.InputArgs;
-import Designite.metrics.MethodMetrics;
+import Designite.metrics.MethodMetricsJava;
 import Designite.smells.models.ImplementationCodeSmell;
 import Designite.utils.CSVUtils;
 import Designite.utils.Constants;
@@ -24,33 +24,33 @@ import Designite.utils.models.Vertex;
 import Designite.visitors.StaticFieldAccessVisitor;
 
 //TODO check EnumDeclaration, AnnotationTypeDeclaration and nested classes
-public class SM_Type extends SM_SourceItem implements Vertex {
+public class SmType extends SmSourceItem implements Vertex {
 	
 	
 	private boolean isAbstract = false;
 	private boolean isInterface = false;
-	private SM_Package parentPkg;
+	private SmPackage parentPkg;
 
 	private TypeDeclaration typeDeclaration;
 	private TypeDeclaration containerClass;
 	private boolean nestedClass;
 	
-	private List<SM_Type> superTypes = new ArrayList<>();
-	private List<SM_Type> subTypes = new ArrayList<>();
-	private List<SM_Type> referencedTypeList = new ArrayList<>();
-	private List<SM_Type> typesThatReferenceThisList = new ArrayList<>();
-	private List<SM_Type> nestedTypesList = new ArrayList<>();
+	private List<SmType> superTypes = new ArrayList<>();
+	private List<SmType> subTypes = new ArrayList<>();
+	private List<SmType> referencedTypeList = new ArrayList<>();
+	private List<SmType> typesThatReferenceThisList = new ArrayList<>();
+	private List<SmType> nestedTypesList = new ArrayList<>();
 	private List<ImportDeclaration> importList = new ArrayList<>();
-	private List<SM_Method> methodList = new ArrayList<>();
-	private List<SM_Field> fieldList = new ArrayList<>();
+	private List<SmMethod> methodList = new ArrayList<>();
+	private List<SmField> fieldList = new ArrayList<>();
 	private List<Name> staticFieldAccesses = new ArrayList<>();
-	private List<SM_Type> staticFieldAccessList = new ArrayList<>();
-	private List<SM_Type> staticMethodInvocations = new ArrayList<>();
-	private Map<SM_Method, MethodMetrics> metricsMapping = new HashMap<>();
-	private Map<SM_Method, List<ImplementationCodeSmell>> smellMapping = new HashMap<>();
+	private List<SmType> staticFieldAccessList = new ArrayList<>();
+	private List<SmType> staticMethodInvocations = new ArrayList<>();
+	private Map<SmMethod, MethodMetricsJava> metricsMapping = new HashMap<>();
+	private Map<SmMethod, List<ImplementationCodeSmell>> smellMapping = new HashMap<>();
 	private InputArgs inputArgs;
 
-	public SM_Type(TypeDeclaration typeDeclaration, CompilationUnit compilationUnit, SM_Package pkg, InputArgs inputArgs) {
+	public SmType(TypeDeclaration typeDeclaration, CompilationUnit compilationUnit, SmPackage pkg, InputArgs inputArgs) {
 		parentPkg = pkg;
 		if (typeDeclaration == null || compilationUnit == null)
 			throw new NullPointerException();
@@ -63,19 +63,19 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		setImportList(compilationUnit);
 	}
 	
-	public List<SM_Type> getSuperTypes() {
+	public List<SmType> getSuperTypes() {
 		return superTypes;
 	}
 	
-	public List<SM_Type> getSubTypes() {
+	public List<SmType> getSubTypes() {
 		return subTypes;
 	}
 	
-	public List<SM_Type> getReferencedTypeList() {
+	public List<SmType> getReferencedTypeList() {
 		return referencedTypeList;
 	}
 	
-	public List<SM_Type> getTypesThatReferenceThis() {
+	public List<SmType> getTypesThatReferenceThis() {
 		return typesThatReferenceThisList;
 	}
 
@@ -83,24 +83,24 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		return typeDeclaration;
 	}
 	
-	public void addReferencedTypeList(SM_Type type) {
+	public void addReferencedTypeList(SmType type) {
 		referencedTypeList.add(type);
 	}
 	
-	public void addStaticMethodInvocation(SM_Type type) {
+	public void addStaticMethodInvocation(SmType type) {
 		if (!this.staticMethodInvocations.contains(type)){
 			this.staticMethodInvocations.add(type);
 		} 
 	}
 	
-	public void addNestedClass(SM_Type type) {
+	public void addNestedClass(SmType type) {
 		if (!this.nestedTypesList.contains(type)) {
 			this.nestedTypesList.add(type);
 		}
 	}
 	
-	public SM_Type getNestedTypeFromName(String typeName) {
-		for(SM_Type nestedType : this.nestedTypesList) {
+	public SmType getNestedTypeFromName(String typeName) {
+		for(SmType nestedType : this.nestedTypesList) {
 			if(nestedType.name.equals(typeName)) {
 				return nestedType;
 			}
@@ -108,19 +108,19 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		return null;
 	}
 	
-	public List<SM_Type> getNestedTypes() {
+	public List<SmType> getNestedTypes() {
 		return this.nestedTypesList;
 	}
 	
-	public boolean containsTypeInReferencedTypeList(SM_Type type) {
+	public boolean containsTypeInReferencedTypeList(SmType type) {
 		return referencedTypeList.contains(type);
 	}
 	
-	public void addTypesThatReferenceThisList(SM_Type type) {
+	public void addTypesThatReferenceThisList(SmType type) {
 		typesThatReferenceThisList.add(type);
 	}
 	
-	public boolean containsTypeInTypesThatReferenceThisList(SM_Type type) {
+	public boolean containsTypeInTypesThatReferenceThisList(SmType type) {
 		return typesThatReferenceThisList.contains(type);
 	}
 
@@ -164,7 +164,7 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		Type superclass = typeDeclaration.getSuperclassType();
 		if (superclass != null)
 		{
-			SM_Type inferredType = (new Resolver()).resolveType(superclass, parentPkg.getParentProject());
+			SmType inferredType = (new Resolver()).resolveType(superclass, parentPkg.getParentProject());
 			if(inferredType != null) {
 				superTypes.add(inferredType);
 				inferredType.addThisAsChildToSuperType(this);
@@ -178,7 +178,7 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		if (superInterfaces != null)
 		{
 			for (Type superInterface : superInterfaces)  {
-				SM_Type inferredType = (new Resolver()).resolveType(superInterface, parentPkg.getParentProject());
+				SmType inferredType = (new Resolver()).resolveType(superInterface, parentPkg.getParentProject());
 				if(inferredType != null) {
 					superTypes.add(inferredType);
 					inferredType.addThisAsChildToSuperType(this);
@@ -188,32 +188,32 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 			
 	}
 	
-	private void addThisAsChildToSuperType(SM_Type child) {
+	private void addThisAsChildToSuperType(SmType child) {
 		if (!subTypes.contains(child)) {
 			subTypes.add(child);
 		}
 	}
 
-	public List<SM_Method> getMethodList() {
+	public List<SmMethod> getMethodList() {
 		return methodList;
 	}
 
-	public List<SM_Field> getFieldList() {
+	public List<SmField> getFieldList() {
 		return fieldList;
 	}
 
-	public SM_Package getParentPkg() {
+	public SmPackage getParentPkg() {
 		return parentPkg;
 	}
 
 	private void parseMethods() {
-		for (SM_Method method : methodList) {
+		for (SmMethod method : methodList) {
 			method.parse();
 		}
 	}
 
 	private void parseFields() {
-		for (SM_Field field : fieldList) {
+		for (SmField field : fieldList) {
 			field.parse();
 		}
 	}
@@ -230,11 +230,11 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		if (nestedClass)
 			print(writer, "\tContainer class: " + containerClass.getName());
 		print(writer, "\tReferenced types: ");
-		for (SM_Type type:referencedTypeList)
+		for (SmType type:referencedTypeList)
 			print(writer, "\t\t" + type.getName());
-		for (SM_Field field : fieldList)
+		for (SmField field : fieldList)
 			field.printDebugLog(writer);
-		for (SM_Method method : methodList)
+		for (SmMethod method : methodList)
 			method.printDebugLog(writer);
 		print(writer, "\t----");
 	}
@@ -244,14 +244,14 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 	public void parse() {
 		MethodVisitor methodVisitor = new MethodVisitor(typeDeclaration, this);
 		typeDeclaration.accept(methodVisitor);
-		List<SM_Method> mList = methodVisitor.getMethods();
+		List<SmMethod> mList = methodVisitor.getMethods();
 		if (mList.size() > 0)
 			methodList.addAll(mList);
 		parseMethods();
 
 		FieldVisitor fieldVisitor = new FieldVisitor(this);
 		typeDeclaration.accept(fieldVisitor);
-		List<SM_Field> fList = fieldVisitor.getFields();
+		List<SmField> fList = fieldVisitor.getFields();
 		if (fList.size() > 0)
 			fieldList.addAll(fList);
 		parseFields();
@@ -263,9 +263,9 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 
 	@Override
 	public void resolve() {
-		for (SM_Method method : methodList)
+		for (SmMethod method : methodList)
 			method.resolve();
-		for (SM_Field field : fieldList)
+		for (SmField field : fieldList)
 			field.resolve();
 		setStaticAccessList();
 		setReferencedTypes();
@@ -280,33 +280,33 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 	}
 	
 	private void setReferencedTypes() {
-		for (SM_Field field:fieldList)
+		for (SmField field:fieldList)
 			if(!field.isPrimitiveType()) {
 				addUniqueReference(this, field.getType(), false);
 			}	
-		for (SM_Method method:methodList) {
-			for (SM_Type refType:method.getReferencedTypeList()) {
+		for (SmMethod method:methodList) {
+			for (SmType refType:method.getReferencedTypeList()) {
 				addUniqueReference(this, refType, false);
 			}
 		}
-		for (SM_Type staticAccessType : staticFieldAccessList) {
+		for (SmType staticAccessType : staticFieldAccessList) {
 			addUniqueReference(this, staticAccessType, false);
 		}
-		for (SM_Type methodInvocation : staticMethodInvocations){
+		for (SmType methodInvocation : staticMethodInvocations){
 			addUniqueReference(this, methodInvocation, false);
 			
 		}
 	}
 	
 	private void setTypesThatReferenceThis() {
-		for (SM_Type refType : referencedTypeList) {
+		for (SmType refType : referencedTypeList) {
 			addUniqueReference(refType, this, true);
 		}
 	}
 	
 	private void updateHierarchyGraph() {
 		if (superTypes.size() > 0) {
-			for (SM_Type superType : superTypes) {
+			for (SmType superType : superTypes) {
 				getParentPkg().getParentProject().getHierarchyGraph().addEdge(
 						new Edge(this, superType));
 			}
@@ -316,7 +316,7 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 	
 	private void updateDependencyGraph() {
 		if (getReferencedTypeList().size() > 0) {
-			for (SM_Type dependency : getReferencedTypeList()) {
+			for (SmType dependency : getReferencedTypeList()) {
 				getParentPkg().getParentProject().getDependencyGraph().addEdge(
 						new Edge(this, dependency));
 			}
@@ -324,7 +324,7 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 		getParentPkg().getParentProject().getDependencyGraph().addVertex(this);
 	}
 	
-	private void addUniqueReference(SM_Type type, SM_Type typeToAdd, boolean invardReference) {
+	private void addUniqueReference(SmType type, SmType typeToAdd, boolean invardReference) {
 		if(typeToAdd == null)
 			return;
 		if (invardReference) {
@@ -339,25 +339,25 @@ public class SM_Type extends SM_SourceItem implements Vertex {
 	}
 
 	public void extractMethodMetrics() {
-		for (SM_Method method : methodList) {
-			MethodMetrics metrics = new MethodMetrics(method);
+		for (SmMethod method : methodList) {
+			MethodMetricsJava metrics = new MethodMetricsJava(method);
 			metrics.extractMetrics();
 			metricsMapping.put(method, metrics);
 			exportMethodMetricsToCSV(metrics, method.getName());
 		}
 	}
 	
-	public MethodMetrics getMetricsFromMethod(SM_Method method) {
+	public MethodMetricsJava getMetricsFromMethod(SmMethod method) {
 		return metricsMapping.get(method);
 	}
 	
-	public void exportMethodMetricsToCSV(MethodMetrics metrics, String methodName) {
+	public void exportMethodMetricsToCSV(MethodMetricsJava metrics, String methodName) {
 		String path = inputArgs.getOutputFolder()
 				+ File.separator + Constants.METHOD_METRICS_PATH_SUFFIX;
 		CSVUtils.addToCSVFile(path, getMetricsAsARow(metrics, methodName));
 	}
 	
-	private String getMetricsAsARow(MethodMetrics metrics, String methodName) {
+	private String getMetricsAsARow(MethodMetricsJava metrics, String methodName) {
 		return getParentPkg().getParentProject().getName()
 				+ "," + getParentPkg().getName()
 				+ "," + getName()

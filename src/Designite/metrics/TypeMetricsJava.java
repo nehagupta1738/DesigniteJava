@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Designite.SourceModel.AccessStates;
-import Designite.SourceModel.SM_Field;
-import Designite.SourceModel.SM_Method;
-import Designite.SourceModel.SM_Type;
+import Designite.SourceModel.SmField;
+import Designite.SourceModel.SmMethod;
+import Designite.SourceModel.SmType;
 import Designite.utils.models.Edge;
 import Designite.utils.models.Graph;
 import Designite.utils.models.Vertex;
 
-public class TypeMetrics implements MetricExtractor {
+public class TypeMetricsJava implements MetricExtractor {
 	
 	private int numOfFields;
 	private int numOfPublicFields;
@@ -25,11 +25,11 @@ public class TypeMetrics implements MetricExtractor {
 	private int numOfFanInTypes;
 	private double lcom;
 	
-	private SM_Type type;
+	private SmType type;
 	
 	private Graph graph;
 	
-	public TypeMetrics(SM_Type type) {
+	public TypeMetricsJava(SmType type) {
 		
 		this.type = type;
 	}
@@ -48,11 +48,11 @@ public class TypeMetrics implements MetricExtractor {
 	}
 	
 	private void extractNumOfFieldMetrics() {
-		for (SM_Field field : type.getFieldList()) {
+		for (SmField field : type.getFieldList()) {
 			numOfFields++;
 			if (field.getAccessModifier() == AccessStates.PUBLIC) {
 				// do not calculate fields that belong to a nested class with a stricter access modifier
-				SM_Type nestedParent = field.getNestedParent();
+				SmType nestedParent = field.getNestedParent();
 				if(nestedParent != null && nestedParent.getAccessModifier() != AccessStates.PUBLIC) {
 					continue;
 				}
@@ -62,7 +62,7 @@ public class TypeMetrics implements MetricExtractor {
 	}
 	
 	private void extractNumOfMethodsMetrics() {
-		for (SM_Method method : type.getMethodList()) {
+		for (SmMethod method : type.getMethodList()) {
 			numOfMethods++;
 			if (method.getAccessModifier() == AccessStates.PUBLIC) {
 				numOfPublicMethods++;
@@ -83,12 +83,12 @@ public class TypeMetrics implements MetricExtractor {
 		numOfChildren = type.getSubTypes().size();
 	}
 	
-	private int findInheritanceDepth(List<SM_Type> superTypes) {
+	private int findInheritanceDepth(List<SmType> superTypes) {
 		if (superTypes.size() == 0) {
 			return 0;
 		}
-		List<SM_Type> deeperSuperTypes = new ArrayList<>();
-		for (SM_Type superType : superTypes) {
+		List<SmType> deeperSuperTypes = new ArrayList<>();
+		for (SmType superType : superTypes) {
 			deeperSuperTypes.addAll(superType.getSuperTypes());
 		}
 		try {
@@ -100,7 +100,7 @@ public class TypeMetrics implements MetricExtractor {
 	}
 	
 	private void extractWeightedMethodsPerClass() {
-		for (SM_Method method : type.getMethodList()) {
+		for (SmMethod method : type.getMethodList()) {
 			weightedMethodsPerClass += type.getMetricsFromMethod(method).getCyclomaticComplexity();
 		} 
 	}
@@ -137,29 +137,29 @@ public class TypeMetrics implements MetricExtractor {
 	private void initializeVertices() {
 		//List<Vertex> vertices = new ArrayList<>();
 		graph = new Graph();
-		for (SM_Method method : type.getMethodList()) {
+		for (SmMethod method : type.getMethodList()) {
 			graph.addVertex(method);
 		}
-		for (SM_Field field : type.getFieldList()) {
+		for (SmField field : type.getFieldList()) {
 			graph.addVertex(field);
 		}
 	}
 	
 	private void initializeEdges() {
-		for (SM_Method method : type.getMethodList()) {
+		for (SmMethod method : type.getMethodList()) {
 			addAdjacentFields(method);
 			addAdjacentMethods(method);
 		}
 	}
 	
-	private void addAdjacentFields(SM_Method method) {
-		for (SM_Field fieldVertex : method.getDirectFieldAccesses()) {
+	private void addAdjacentFields(SmMethod method) {
+		for (SmField fieldVertex : method.getDirectFieldAccesses()) {
 			graph.addEdge(new Edge(method, fieldVertex));
 		}
 	}
 	
-	private void addAdjacentMethods(SM_Method method) {
-		for (SM_Method methodVertex : type.getMethodList()) {
+	private void addAdjacentMethods(SmMethod method) {
+		for (SmMethod methodVertex : type.getMethodList()) {
 			if (!method.equals(methodVertex) && method.getCalledMethods().contains(methodVertex)) {
 				graph.addEdge(new Edge(method, methodVertex));
 			}
@@ -178,7 +178,7 @@ public class TypeMetrics implements MetricExtractor {
 	private List<List<Vertex>> getNonSingleElementFieldComponents() {
 		List<List<Vertex>> cleanComponents = new ArrayList<>();;
 		for (List<Vertex> component : graph.getConnectedComponnents()) {
-			if (component.size() != 1 || !(component.get(0) instanceof SM_Field)) {
+			if (component.size() != 1 || !(component.get(0) instanceof SmField)) {
 				cleanComponents.add(component);
 			}
 		}
@@ -229,7 +229,7 @@ public class TypeMetrics implements MetricExtractor {
 		return lcom;
 	}
 	
-	public SM_Type getType() {
+	public SmType getType() {
 		return type;
 	}
 

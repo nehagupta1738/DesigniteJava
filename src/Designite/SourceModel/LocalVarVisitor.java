@@ -9,10 +9,10 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 public class LocalVarVisitor extends ASTVisitor {
-	List<SM_LocalVar> localVariables = new ArrayList<SM_LocalVar>();
-	private SM_Method parentMethod;
+	List<SmLocalVar> localVariables = new ArrayList<SmLocalVar>();
+	private SmMethod parentMethod;
 	
-	public LocalVarVisitor(SM_Method methodObj) {
+	public LocalVarVisitor(SmMethod methodObj) {
 		this.parentMethod = methodObj;
 	}
 
@@ -21,14 +21,14 @@ public class LocalVarVisitor extends ASTVisitor {
 			VariableDeclarationFragment fragment = (VariableDeclarationFragment) iter.next();
 //			IVariableBinding binding = fragment.resolveBinding();
 			
-			SM_LocalVar newLocalVar = new SM_LocalVar(variable, fragment, parentMethod);
+			SmLocalVar newLocalVar = new SmLocalVar(variable, fragment, parentMethod);
 			//newLocalVar.setType(variable.getType());
 			localVariables.add(newLocalVar);
 		}
 		return super.visit(variable);
 	}
 	
-	public List<SM_LocalVar> getLocalVarList() {
+	public List<SmLocalVar> getLocalVarList() {
 		return localVariables;
 	}
 	

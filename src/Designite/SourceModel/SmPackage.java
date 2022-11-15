@@ -10,28 +10,28 @@ import java.util.Map;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import Designite.InputArgs;
-import Designite.metrics.TypeMetrics;
+import Designite.metrics.TypeMetricsJava;
 import Designite.smells.models.DesignCodeSmell;
 import Designite.utils.CSVUtils;
 import Designite.utils.Constants;
 import Designite.utils.models.Edge;
 
-public class SM_Package extends SM_SourceItem {
+public class SmPackage extends SmSourceItem {
 	private List<CompilationUnit> compilationUnitList;
-	private List<SM_Type> typeList = new ArrayList<>();
-	private SM_Project parentProject;
-	private Map<SM_Type, TypeMetrics> metricsMapping = new HashMap<>();
-	private Map<SM_Type, List<DesignCodeSmell>> smellMapping = new HashMap<>();
+	private List<SmType> typeList = new ArrayList<>();
+	private SmProject parentProject;
+	private Map<SmType, TypeMetricsJava> metricsMapping = new HashMap<>();
+	private Map<SmType, List<DesignCodeSmell>> smellMapping = new HashMap<>();
 	private InputArgs inputArgs;
 
-	public SM_Package(String packageName, SM_Project parentObj, InputArgs inputArgs) {
+	public SmPackage(String packageName, SmProject parentObj, InputArgs inputArgs) {
 		name = packageName;
 		compilationUnitList = new ArrayList<CompilationUnit>();
 		parentProject = parentObj;
 		this.inputArgs = inputArgs;
 	}
 
-	public SM_Project getParentProject() {
+	public SmProject getParentProject() {
 		return parentProject;
 	}
 
@@ -41,7 +41,7 @@ public class SM_Package extends SM_SourceItem {
      }
 	 
 
-	public List<SM_Type> getTypeList() {
+	public List<SmType> getTypeList() {
 		return typeList;
 	}
 
@@ -49,7 +49,7 @@ public class SM_Package extends SM_SourceItem {
 		compilationUnitList.add(unit);
 	}
 
-	private void addNestedClass(List<SM_Type> list) {
+	private void addNestedClass(List<SmType> list) {
 		if (list.size() > 1) {
 			for (int i = 1; i < list.size(); i++) {
 				//SM_Type nested = list.get(i);
@@ -61,8 +61,8 @@ public class SM_Package extends SM_SourceItem {
 		}
 	}
 
-	private void parseTypes(SM_Package parentPkg) {
-		for (SM_Type type : typeList) {
+	private void parseTypes(SmPackage parentPkg) {
+		for (SmType type : typeList) {
 			type.parse();
 //			System.out.println("Type : " + type.name + ", nested:: " + type.getNestedTypes());
 		}
@@ -71,7 +71,7 @@ public class SM_Package extends SM_SourceItem {
 	@Override
 	public void printDebugLog(PrintWriter writer) {
 		print(writer, "Package: " + name);
-		for (SM_Type type : typeList) {
+		for (SmType type : typeList) {
 			type.printDebugLog(writer);
 		}
 		print(writer, "----");
@@ -90,7 +90,7 @@ public class SM_Package extends SM_SourceItem {
 
 			TypeVisitor visitor = new TypeVisitor(unit, this, inputArgs);
 			unit.accept(visitor);
-			List<SM_Type> list = visitor.getTypeList();
+			List<SmType> list = visitor.getTypeList();
 			if (list.size() > 0) {
 				if (list.size() == 1) {
 					typeList.addAll(list); // if the compilation unit contains
@@ -108,15 +108,15 @@ public class SM_Package extends SM_SourceItem {
 
 	@Override
 	public void resolve() {
-		for (SM_Type type : typeList) { 
+		for (SmType type : typeList) {
 			type.resolve();
 		}
 	}
 
 	public void extractTypeMetrics() {
-		for (SM_Type type : typeList) {
+		for (SmType type : typeList) {
 			type.extractMethodMetrics();
-			TypeMetrics metrics = new TypeMetrics(type);
+			TypeMetricsJava metrics = new TypeMetricsJava(type);
 			metrics.extractMetrics();
 			metricsMapping.put(type, metrics);
 			exportMetricsToCSV(metrics, type.getName());
@@ -124,22 +124,22 @@ public class SM_Package extends SM_SourceItem {
 		}
 	}
 	
-	private void updateDependencyGraph(SM_Type type) {
+	private void updateDependencyGraph(SmType type) {
 		if (type.getReferencedTypeList().size() > 0) {
-			for (SM_Type dependency : type.getReferencedTypeList()) {
+			for (SmType dependency : type.getReferencedTypeList()) {
 				getParentProject().getHierarchyGraph().addEdge(new Edge(type, dependency));
 			}
 		}
 		getParentProject().getHierarchyGraph().addVertex(type);
 	}
 	
-	private void exportMetricsToCSV(TypeMetrics metrics, String typeName) {
+	private void exportMetricsToCSV(TypeMetricsJava metrics, String typeName) {
 		String path = inputArgs.getOutputFolder()
 				+ File.separator + Constants.TYPE_METRICS_PATH_SUFFIX;
 		CSVUtils.addToCSVFile(path, getMetricsAsARow(metrics, typeName));
 	}
 	
-	private String getMetricsAsARow(TypeMetrics metrics, String typeName) {
+	private String getMetricsAsARow(TypeMetricsJava metrics, String typeName) {
 		return getParentProject().getName()
 				+ "," + getName()
 				+ "," + typeName

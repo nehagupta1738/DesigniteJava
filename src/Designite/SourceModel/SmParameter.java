@@ -5,11 +5,11 @@ import java.io.PrintWriter;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public class SM_Parameter extends SM_EntitiesWithType {
-	private SM_Method parentMethod;
+public class SmParameter extends SmEntitiesWithType {
+	private SmMethod parentMethod;
 	private SingleVariableDeclaration variableDecl;
 	
-	public SM_Parameter(SingleVariableDeclaration variable, SM_Method methodObj) {
+	public SmParameter(SingleVariableDeclaration variable, SmMethod methodObj) {
 		name = variable.getName().toString();
 		this.parentMethod = methodObj;
 		variableDecl = variable;
@@ -17,12 +17,12 @@ public class SM_Parameter extends SM_EntitiesWithType {
 	}
 
 	
-	public SM_Method getParent() {
+	public SmMethod getParent() {
 		return parentMethod;
 	}
 	
 	@Override
-	public SM_Type getParentType() {
+	public SmType getParentType() {
 		return this.parentMethod.getParentType();
 	}
 	

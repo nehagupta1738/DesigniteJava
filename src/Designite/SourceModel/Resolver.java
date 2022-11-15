@@ -23,18 +23,18 @@ class Resolver {
 	private Type arrayType;
 
 	// FIXME : Duplicated code in the method
-	public List<SM_Type> inferStaticAccess(List<Name> staticFieldAccesses, SM_Type type) {
-		List<SM_Type> typesOfStaticAccesses = new ArrayList<>();
+	public List<SmType> inferStaticAccess(List<Name> staticFieldAccesses, SmType type) {
+		List<SmType> typesOfStaticAccesses = new ArrayList<>();
 		for (Name typeName : staticFieldAccesses) {
 			if (typeName.resolveBinding() instanceof ITypeBinding) {
 				ITypeBinding iType = (ITypeBinding) typeName.resolveBinding();
 
 				if (iType != null && iType.getPackage() != null) {
-					SM_Package sm_pkg = findPackage(iType.getPackage().getName().toString(),
+					SmPackage sm_pkg = findPackage(iType.getPackage().getName().toString(),
 							type.getParentPkg().getParentProject());
 
 					if (sm_pkg != null) {
-						SM_Type sm_type = findType(iType.getName().toString(), sm_pkg);
+						SmType sm_type = findType(iType.getName().toString(), sm_pkg);
 						if (sm_type != null) {
 							if (!typesOfStaticAccesses.contains(sm_type)) {
 								typesOfStaticAccesses.add(sm_type);
@@ -44,7 +44,7 @@ class Resolver {
 				}
 			} else {
 				String unresolvedTypeName = typeName.toString().replace("[]", ""); // cover the Array case
-				SM_Type matchedType = manualLookupForUnresolvedType(type.getParentPkg().getParentProject(),
+				SmType matchedType = manualLookupForUnresolvedType(type.getParentPkg().getParentProject(),
 						unresolvedTypeName, type);
 				if (matchedType != null) {
 					if (!typesOfStaticAccesses.contains(matchedType)) {
@@ -57,19 +57,19 @@ class Resolver {
 		return typesOfStaticAccesses;
 	}
 
-	public List<SM_Method> inferCalledMethods(List<MethodInvocation> calledMethods, SM_Type parentType) {
-		List<SM_Method> calledMethodsList = new ArrayList<>();
+	public List<SmMethod> inferCalledMethods(List<MethodInvocation> calledMethods, SmType parentType) {
+		List<SmMethod> calledMethodsList = new ArrayList<>();
 		for (MethodInvocation method : calledMethods) {
 			IMethodBinding imethod = method.resolveMethodBinding();
 
 			// binding is resolved without returning null
 			if (imethod != null) {
-				SM_Package sm_pkg = findPackage(imethod.getDeclaringClass().getPackage().getName().toString(),
+				SmPackage sm_pkg = findPackage(imethod.getDeclaringClass().getPackage().getName().toString(),
 						parentType.getParentPkg().getParentProject());
 				if (sm_pkg != null) {
-					SM_Type sm_type = findType(imethod.getDeclaringClass().getName().toString(), sm_pkg);
+					SmType sm_type = findType(imethod.getDeclaringClass().getName().toString(), sm_pkg);
 					if (sm_type != null) {
-						SM_Method sm_method = findMethod(imethod, sm_type);
+						SmMethod sm_method = findMethod(imethod, sm_type);
 						if (sm_method != null)
 							calledMethodsList.add(sm_method);
 					}
@@ -83,7 +83,7 @@ class Resolver {
 				// System.out.println("## Uresolved method :: " + method.toString());
 				if (exp != null) {
 					String typeName = exp.toString();
-					SM_Type matchedType = manualLookupForUnresolvedType(parentType.getParentPkg().getParentProject(),
+					SmType matchedType = manualLookupForUnresolvedType(parentType.getParentPkg().getParentProject(),
 							typeName, parentType);
 					if (matchedType != null) {
 						parentType.addStaticMethodInvocation(matchedType);
@@ -98,7 +98,7 @@ class Resolver {
 					Expression temp = null;
 					exp = itr.next();
 					String typeName = exp.toString();
-					SM_Type matchedType = manualLookupForUnresolvedType(parentType.getParentPkg().getParentProject(),
+					SmType matchedType = manualLookupForUnresolvedType(parentType.getParentPkg().getParentProject(),
 							typeName, parentType);
 					if (matchedType != null) {
 						parentType.addStaticMethodInvocation(matchedType);
@@ -129,8 +129,8 @@ class Resolver {
 			existingArgumentList.add(newArgument);
 	}
 
-	private SM_Package findPackage(String packageName, SM_Project project) {
-		for (SM_Package sm_pkg : project.getPackageList()) {
+	private SmPackage findPackage(String packageName, SmProject project) {
+		for (SmPackage sm_pkg : project.getPackageList()) {
 			if (sm_pkg.getName().equals(packageName)) {
 				return sm_pkg;
 			}
@@ -139,12 +139,12 @@ class Resolver {
 		return null;
 	}
 
-	private SM_Method findMethod(IMethodBinding method, SM_Type type) {
+	private SmMethod findMethod(IMethodBinding method, SmType type) {
 		String methodName = method.getName().toString();
 		int parameterCount = method.getParameterTypes().length;
 		boolean sameParameters = true;
 
-		for (SM_Method sm_method : type.getMethodList()) {
+		for (SmMethod sm_method : type.getMethodList()) {
 			if (sm_method.getName().equals(methodName)) {
 				if (sm_method.getParameterList().size() == parameterCount) {
 					if (parameterCount == 0) {
@@ -168,18 +168,18 @@ class Resolver {
 		return null;
 	}
 
-	public SM_Type resolveType(Type type, SM_Project project) {
+	public SmType resolveType(Type type, SmProject project) {
 		ITypeBinding binding = type.resolveBinding();
 		if (binding == null || binding.getPackage() == null) // instanceof String[] returns null package
 			return null;
-		SM_Package pkg = findPackage(binding.getPackage().getName(), project);
+		SmPackage pkg = findPackage(binding.getPackage().getName(), project);
 		if (pkg != null) {
 			return findType(binding.getName(), pkg);
 		}
 		return null;
 	}
 
-	public TypeInfo resolveVariableType(Type typeNode, SM_Project parentProject, SM_Type callerType) {
+	public TypeInfo resolveVariableType(Type typeNode, SmProject parentProject, SmType callerType) {
 		TypeInfo typeInfo = new TypeInfo();
 		specifyTypes(typeNode);
 
@@ -195,7 +195,7 @@ class Resolver {
 		return typeInfo;
 	}
 
-	private void inferTypeInfo(SM_Project parentProject, TypeInfo typeInfo, Type typeOfVar, SM_Type callerType) {
+	private void inferTypeInfo(SmProject parentProject, TypeInfo typeInfo, Type typeOfVar, SmType callerType) {
 		ITypeBinding iType = typeOfVar.resolveBinding();
 		/*
 		 * In some cases, the above statement doesnt resolve the binding even if the
@@ -214,7 +214,7 @@ class Resolver {
 		} else if (iType.isRecovered()) {
 			// Search in the ast explicitly and assign
 			String unresolvedTypeName = typeOfVar.toString().replace("[]", ""); // cover the Array case
-			SM_Type matchedType = manualLookupForUnresolvedType(parentProject, unresolvedTypeName, callerType);
+			SmType matchedType = manualLookupForUnresolvedType(parentProject, unresolvedTypeName, callerType);
 			if (matchedType != null) {
 				manualInferUnresolvedTypeType(typeInfo, matchedType);
 			}
@@ -224,9 +224,9 @@ class Resolver {
 		}
 	}
 
-	private SM_Type manualLookupForUnresolvedType(SM_Project parentProject, String unresolvedTypeName,
-			SM_Type callerType) {
-		SM_Type matchedType = null;
+	private SmType manualLookupForUnresolvedType(SmProject parentProject, String unresolvedTypeName,
+												 SmType callerType) {
+		SmType matchedType = null;
 
 		int numberOfDots = new StringTokenizer(" " + unresolvedTypeName + " ", ".").countTokens() - 1;
 
@@ -273,14 +273,14 @@ class Resolver {
 			return "default";
 	}
 
-	private void manualInferUnresolvedTypeType(TypeInfo typeInfo, SM_Type type) {
+	private void manualInferUnresolvedTypeType(TypeInfo typeInfo, SmType type) {
 		typeInfo.setTypeObj(type);
 		typeInfo.setPrimitiveType(false);
 	}
 
-	private void inferPrimitiveType(SM_Project parentProject, TypeInfo typeInfo, ITypeBinding iType) {
+	private void inferPrimitiveType(SmProject parentProject, TypeInfo typeInfo, ITypeBinding iType) {
 		if (iType != null && iType.isFromSource() && iType.getModifiers() != 0 && !iType.isWildcardType()) {
-			SM_Type inferredType = findType(iType.getName(), iType.getPackage().getName(), parentProject);
+			SmType inferredType = findType(iType.getName(), iType.getPackage().getName(), parentProject);
 			if (inferredType != null) {
 				typeInfo.setTypeObj(inferredType);
 				typeInfo.setPrimitiveType(false);
@@ -297,7 +297,7 @@ class Resolver {
 		}
 	}
 
-	private void infereParametrized(SM_Project parentProject, TypeInfo typeInfo, ITypeBinding iType) {
+	private void infereParametrized(SmProject parentProject, TypeInfo typeInfo, ITypeBinding iType) {
 		if (iType != null && iType.isParameterizedType()) {
 			typeInfo.setParametrizedType(true);
 			addNonPrimitiveParameters(parentProject, typeInfo, iType);
@@ -307,9 +307,9 @@ class Resolver {
 		}
 	}
 
-	private void addNonPrimitiveParameters(SM_Project parentProject, TypeInfo typeInfo, ITypeBinding iType) {
+	private void addNonPrimitiveParameters(SmProject parentProject, TypeInfo typeInfo, ITypeBinding iType) {
 		if (iType.isFromSource() && iType.getModifiers() != 0) {
-			SM_Type inferredBasicType = findType(iType.getName(), iType.getPackage().getName(), parentProject);
+			SmType inferredBasicType = findType(iType.getName(), iType.getPackage().getName(), parentProject);
 			addParameterIfNotAlreadyExists(typeInfo, inferredBasicType);
 		}
 		for (ITypeBinding typeParameter : iType.getTypeArguments()) {
@@ -317,7 +317,7 @@ class Resolver {
 				addNonPrimitiveParameters(parentProject, typeInfo, typeParameter);
 			} else {
 				if (typeParameter.isFromSource() && typeParameter.getModifiers() != 0) {
-					SM_Type inferredType = findType(typeParameter.getName(), typeParameter.getPackage().getName(),
+					SmType inferredType = findType(typeParameter.getName(), typeParameter.getPackage().getName(),
 							parentProject);
 					if (inferredType != null) {
 						addParameterIfNotAlreadyExists(typeInfo, inferredType);
@@ -327,7 +327,7 @@ class Resolver {
 		}
 	}
 
-	private void addParameterIfNotAlreadyExists(TypeInfo typeInfo, SM_Type inferredType) {
+	private void addParameterIfNotAlreadyExists(TypeInfo typeInfo, SmType inferredType) {
 		if (!typeInfo.getNonPrimitiveTypeParameters().contains(inferredType)) {
 			typeInfo.addNonPrimitiveTypeParameter(inferredType);
 		}
@@ -337,16 +337,16 @@ class Resolver {
 		return typeInfo.getNumOfNonPrimitiveParameters() > 0;
 	}
 
-	private SM_Type findType(String typeName, String packageName, SM_Project project) {
-		SM_Package pkg = findPackage(packageName, project);
+	private SmType findType(String typeName, String packageName, SmProject project) {
+		SmPackage pkg = findPackage(packageName, project);
 		if (pkg != null) {
 			return findType(typeName, pkg);
 		}
 		return null;
 	}
 
-	private SM_Type findType(String className, SM_Package pkg) {
-		for (SM_Type sm_type : pkg.getTypeList()) {
+	private SmType findType(String className, SmPackage pkg) {
+		for (SmType sm_type : pkg.getTypeList()) {
 			if (sm_type.getName().equals(trimParametersIfExist(className))) {
 				return sm_type;
 			}

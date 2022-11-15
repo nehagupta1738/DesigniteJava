@@ -11,15 +11,15 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import Designite.utils.models.Vertex;
 
-public class SM_Field extends SM_EntitiesWithType implements Vertex {
+public class SmField extends SmEntitiesWithType implements Vertex {
 	private TypeDeclaration typeDeclaration;
 	private FieldDeclaration fieldDeclaration;
-	private SM_Type parentType;
-	private SM_Type nestedParentType = null;
+	private SmType parentType;
+	private SmType nestedParentType = null;
 	private boolean finalField = false;
 	private boolean staticField = false;
 	
-	public SM_Field(FieldDeclaration fieldDeclaration, VariableDeclarationFragment varDecl, SM_Type parentType) {
+	public SmField(FieldDeclaration fieldDeclaration, VariableDeclarationFragment varDecl, SmType parentType) {
 		this.fieldDeclaration = fieldDeclaration;
 		this.parentType = parentType;
 		setAccessModifier(fieldDeclaration.getModifiers());
@@ -64,7 +64,7 @@ public class SM_Field extends SM_EntitiesWithType implements Vertex {
 		return "";
 	}
 	
-	public SM_Type getNestedParent() {
+	public SmType getNestedParent() {
 		return this.nestedParentType;
 	}
 	
@@ -81,7 +81,7 @@ public class SM_Field extends SM_EntitiesWithType implements Vertex {
 	}
 	
 	@Override
-	public SM_Type getParentType() {
+	public SmType getParentType() {
 		return parentType;
 	}
 	

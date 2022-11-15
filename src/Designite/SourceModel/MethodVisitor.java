@@ -8,10 +8,10 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 public class MethodVisitor extends ASTVisitor {
-	List<SM_Method> methods = new ArrayList<SM_Method>();
-	private SM_Type parentType;
+	List<SmMethod> methods = new ArrayList<SmMethod>();
+	private SmType parentType;
 	
-	public MethodVisitor(TypeDeclaration typeDeclaration, SM_Type typeObj) {
+	public MethodVisitor(TypeDeclaration typeDeclaration, SmType typeObj) {
 		super();
 
 		this.parentType = typeObj;
@@ -19,13 +19,13 @@ public class MethodVisitor extends ASTVisitor {
 	
 	@Override
 	public boolean visit(MethodDeclaration method) {
-		SM_Method newMethod = new SM_Method(method, parentType);
+		SmMethod newMethod = new SmMethod(method, parentType);
 		methods.add(newMethod);
 		
 		return super.visit(method);
 	}
 	
-	public List<SM_Method> getMethods(){
+	public List<SmMethod> getMethods(){
 		return methods;
 	}
 
